@@ -1,0 +1,114 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "profile": "Perfil",
+    "settings": "Configuración",
+    "logout": "Cerrar Sesión",
+    "login": "Iniciar Sesión",
+    "register": "Registrarse"
+  },
+  "auth": {
+    "login": {
+      "title": "Iniciar Sesión",
+      "email": "Correo Electrónico",
+      "password": "Contraseña",
+      "submit": "Iniciar Sesión",
+      "noAccount": "¿No tienes cuenta?",
+      "registerLink": "Regístrate aquí"
+    },
+    "register": {
+      "title": "Crear Cuenta",
+      "username": "Nombre de Usuario",
+      "email": "Correo Electrónico",
+      "password": "Contraseña",
+      "confirmPassword": "Confirmar Contraseña",
+      "role": "Tipo de Usuario",
+      "roleContentCreator": "Creador de Contenido",
+      "roleFollower": "Seguidor",
+      "submit": "Crear Cuenta",
+      "hasAccount": "¿Ya tienes cuenta?",
+      "loginLink": "Inicia sesión aquí"
+    }
+  },
+  "home": {
+  "welcome": "Bienvenido a IdolQuestions",
+    "subtitle": "Crea y toma cuestionarios interactivos",
+    "createQuiz": "Crear Cuestionario",
+    "takeQuiz": "Tomar Cuestionario",
+    "recentQuizzes": "Cuestionarios Recientes",
+    "noQuizzes": "No hay cuestionarios disponibles"
+  },
+  "settings": {
+    "title": "Configuración",
+    "subtitle": "Gestiona tu cuenta y preferencias",
+    "profile": {
+      "title": "Información del Perfil",
+      "username": "Nombre de Usuario",
+      "email": "Correo Electrónico",
+      "save": "Guardar Cambios"
+    },
+    "password": {
+      "title": "Cambiar Contraseña",
+      "current": "Contraseña Actual",
+      "new": "Nueva Contraseña",
+      "confirm": "Confirmar Nueva Contraseña",
+      "change": "Cambiar Contraseña",
+      "helper": "Debe tener al menos 6 caracteres"
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "enable": "Habilitar notificaciones",
+      "email": "Recibir actualizaciones por email"
+    },
+    "danger": {
+      "title": "Zona de Peligro",
+      "warning": "Una vez que elimines tu cuenta, no hay vuelta atrás. Por favor, asegúrate.",
+      "delete": "Eliminar Cuenta"
+    },
+    "deleteDialog": {
+      "title": "Confirmar Eliminación de Cuenta",
+      "message": "¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.",
+      "details": "Al confirmar, tu cuenta será suspendida por 30 días. Durante este período, podrás seguir accediendo a tu cuenta, pero después de 30 días, tu cuenta y todos los datos asociados (respuestas a cuestionarios y cuestionarios creados) serán eliminados permanentemente.",
+      "irreversible": "¡Esta acción es irreversible!",
+      "cancel": "Cancelar",
+      "confirm": "Eliminar Cuenta"
+    },
+    "success": {
+      "profile": "Perfil actualizado exitosamente",
+      "password": "Contraseña cambiada exitosamente",
+      "deletion": "Solicitud de eliminación de cuenta enviada. Tu cuenta será suspendida por 30 días antes de la eliminación permanente."
+    },
+    "error": {
+      "required": "Nombre de usuario y email son requeridos",
+      "passwordMatch": "Las nuevas contraseñas no coinciden",
+      "passwordLength": "La contraseña debe tener al menos 6 caracteres",
+      "currentPassword": "La contraseña actual es incorrecta",
+      "deletion": "Error al solicitar eliminación de cuenta. Inténtalo de nuevo."
+    }
+  },
+  "profile": {
+    "title": "Perfil",
+    "myQuizzes": "Mis Cuestionarios",
+    "createQuiz": "Crear Cuestionario",
+    "noQuizzes": "No has creado ningún cuestionario aún"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "close": "Cerrar",
+    "open": "Abrir"
+  },
+  "language": {
+    "switchToEnglish": "Cambiar a Inglés",
+    "switchToSpanish": "Cambiar a Español"
+  }
+}

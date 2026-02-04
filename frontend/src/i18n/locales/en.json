@@ -1,0 +1,115 @@
+{
+  "nav": {
+    "home": "Home",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "login": "Login",
+    "register": "Register"
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Login",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Register here"
+    },
+    "register": {
+      "title": "Create Account",
+      "username": "Username",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "role": "User Type",
+      "roleContentCreator": "Content Creator",
+      "roleFollower": "Follower",
+      "submit": "Create Account",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Login here"
+    }
+  },
+  "home": {
+  "welcome": "Welcome to IdolQuestions",
+    "subtitle": "Create and take interactive quizzes",
+    "createQuiz": "Create Quiz",
+    "takeQuiz": "Take Quiz",
+    "recentQuizzes": "Recent Quizzes",
+    "noQuizzes": "No quizzes available"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your account and preferences",
+    "profile": {
+      "title": "Profile Information",
+      "username": "Username",
+      "email": "Email",
+      "save": "Save Changes"
+    },
+    "password": {
+      "title": "Change Password",
+      "current": "Current Password",
+      "new": "New Password",
+      "confirm": "Confirm New Password",
+      "change": "Change Password",
+      "helper": "Must be at least 6 characters"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "enable": "Enable notifications",
+      "email": "Receive email updates"
+    },
+    "danger": {
+      "title": "Danger Zone",
+      "warning": "Once you delete your account, there is no going back. Please be certain.",
+      "delete": "Delete Account"
+    },
+    "deleteDialog": {
+      "title": "Confirm Account Deletion",
+      "message": "Are you sure you want to delete your account? This action cannot be undone.",
+      "details": "Upon confirmation, your account will be suspended for 30 days. During this period, you can still access your account, but after 30 days, your account and all associated data (quiz responses and created quizzes) will be permanently deleted.",
+      "irreversible": "This action is irreversible!",
+      "cancel": "Cancel",
+      "confirm": "Delete Account"
+    },
+    "success": {
+      "profile": "Profile updated successfully",
+      "password": "Password changed successfully",
+      "deletion": "Account deletion requested. Your account will be suspended for 30 days before permanent deletion."
+    },
+    "error": {
+      "required": "Username and email are required",
+      "passwordRequired": "All password fields are required",
+      "passwordMatch": "New passwords do not match",
+      "passwordLength": "Password must be at least 6 characters",
+      "currentPassword": "Current password is incorrect",
+      "deletion": "Failed to request account deletion. Please try again."
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "myQuizzes": "My Quizzes",
+    "createQuiz": "Create Quiz",
+    "noQuizzes": "You haven't created any quizzes yet"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "open": "Open"
+  },
+  "language": {
+    "switchToEnglish": "Switch to English",
+    "switchToSpanish": "Switch to Spanish"
+  }
+}
