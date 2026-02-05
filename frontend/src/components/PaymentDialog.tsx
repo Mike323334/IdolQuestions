@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -51,8 +51,7 @@ const PaymentForm: React.FC<{
   userId: string;
   creatorStripeAccountId: string;
   onSuccess: () => void;
-  onError: (error: string) => void;
-}> = ({ price, quizTitle, creatorName, quizId, userId, creatorStripeAccountId, onSuccess, onError }) => {
+}> = ({ price, quizTitle, creatorName, quizId, userId, creatorStripeAccountId, onSuccess }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [processing, setProcessing] = useState(false);
@@ -207,10 +206,6 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({
     }, 2000);
   };
 
-  const handlePaymentError = (error: string) => {
-    console.error('Payment error:', error);
-  };
-
   return (
     <Dialog 
       open={open} 
@@ -332,7 +327,6 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({
                 userId={userId}
                 creatorStripeAccountId={creatorStripeAccountId}
                 onSuccess={handlePaymentSuccess}
-                onError={handlePaymentError}
               />
             </Elements>
           </Stack>

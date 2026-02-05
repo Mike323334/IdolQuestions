@@ -369,7 +369,7 @@ const CreateQuizManual: React.FC = () => {
           <Alert severity={snackbar.severity} onClose={() => setSnackbar(null)} sx={{ width: '100%' }}>
             {snackbar.message}
           </Alert>
-        ) : null}
+        ) : undefined}
       </Snackbar>
     </Box>
   );

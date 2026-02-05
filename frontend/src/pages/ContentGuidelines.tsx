@@ -5,17 +5,14 @@ import {
   Container,
   Card,
   CardContent,
-  Divider,
   List,
   ListItem,
   ListItemText,
   Alert,
-  Grid,
 } from '@mui/material';
 import {
   CheckCircle as CheckIcon,
   Cancel as CancelIcon,
-  Warning as WarningIcon,
 } from '@mui/icons-material';
 import Layout from '../components/Layout/Layout';
 

@@ -16,7 +16,6 @@ import QuizTaker from './QuizTaker.jsx';
 import BrowseQuizzes from './pages/BrowseQuizzes';
 import TermsOfService from './pages/TermsOfService';
 import RefundPolicy from './pages/RefundPolicy';
-import ContentGuidelines from './pages/ContentGuidelines';
 import RefundRequests from './pages/RefundRequests';
 
 function App(): React.ReactElement {

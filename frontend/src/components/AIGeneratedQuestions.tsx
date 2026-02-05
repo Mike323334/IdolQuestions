@@ -15,10 +15,7 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
-import {
-  AutoAwesome as AIIcon,
-  Refresh as RefreshIcon,
-} from '@mui/icons-material';
+import { AutoAwesome as AIIcon } from '@mui/icons-material';
 import { generateQuestions, QuestionGenerationRequest, GeneratedQuestion } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 

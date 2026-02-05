@@ -60,7 +60,7 @@ const Profile: React.FC = () => {
     }
   }, [location.state]);
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
 

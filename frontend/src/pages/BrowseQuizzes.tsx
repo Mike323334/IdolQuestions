@@ -33,8 +33,8 @@ import { getAllQuizzes } from '../services/quizzes';
 interface Quiz {
   id: string;
   title: string;
-  creatorId: string;
-  creatorName: string;
+  creatorId?: string;
+  creatorName?: string;
   creatorMerchantId?: string;
   creatorStripeAccountId?: string;
   questions: { text: string; options: string[]; correct: number; type: string }[];
@@ -58,12 +58,12 @@ const BrowseQuizzes: React.FC = () => {
         const storedQuizzes = await getAllQuizzes();
         const availableQuizzes = storedQuizzes
           .filter((q) => !q.isOnboarding && q.creatorId !== user?.id)
-          .map((q) => {
-            return {
-              ...q,
-              answerPrice: q.answerPrice ?? 0,
-            };
-          });
+          .map((q) => ({
+            ...q,
+            creatorId: q.creatorId ?? '',
+            creatorName: q.creatorName ?? 'Sin nombre',
+            answerPrice: q.answerPrice ?? 0,
+          }));
         if (isActive) {
           setQuizzes(availableQuizzes);
           setAnswers(storedAnswers);
@@ -114,13 +114,6 @@ const BrowseQuizzes: React.FC = () => {
 
   const hasPurchasedAnswers = (quizId: string) => {
     return answers[quizId]?.purchased?.[user?.username || ''] === true;
-  };
-
-  const getQuizAnswers = (quiz: Quiz) => {
-    const quizAnswers = answers[quiz.id];
-    if (!quizAnswers || !hasPurchasedAnswers(quiz.id)) return null;
-
-    return quiz.questions.map(q => q.correct);
   };
 
   return (
