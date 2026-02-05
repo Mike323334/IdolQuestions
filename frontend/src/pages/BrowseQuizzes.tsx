@@ -282,7 +282,7 @@ const BrowseQuizzes: React.FC = () => {
             onConfirm={handlePaymentConfirm}
             price={selectedQuizForPayment.quiz.answerPrice}
             quizTitle={selectedQuizForPayment.quiz.title}
-            creatorName={selectedQuizForPayment.quiz.creatorName}
+            creatorName={selectedQuizForPayment.quiz.creatorName ?? 'Sin nombre'}
             quizId={selectedQuizForPayment.quizId}
             userId={user.id}
             creatorStripeAccountId={selectedQuizForPayment.quiz.creatorStripeAccountId}
