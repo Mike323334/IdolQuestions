@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import {
   Box,
@@ -25,6 +25,7 @@ import {
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useAuth } from '../../contexts/AuthContext';
+import { checkUsernameAvailability } from '../../services/api';
 
 const Register: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -38,9 +39,65 @@ const Register: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [googleRoleDialogOpen, setGoogleRoleDialogOpen] = useState(false);
   const [googleRole, setGoogleRole] = useState<'Content Creator' | 'Follower' | ''>('');
+  const [usernameError, setUsernameError] = useState('');
+  const [usernameChecking, setUsernameChecking] = useState(false);
+  const [usernameValid, setUsernameValid] = useState(false);
   
   const { register, signInWithGoogle, completeGoogleSignup } = useAuth();
   const navigate = useNavigate();
+
+  const validateUsername = async (usernameValue: string) => {
+    if (!usernameValue.trim()) {
+      setUsernameError('');
+      setUsernameValid(false);
+      return;
+    }
+
+    if (usernameValue.length < 3) {
+      setUsernameError('El nombre de usuario debe tener al menos 3 caracteres');
+      setUsernameValid(false);
+      return;
+    }
+
+    if (usernameValue.length > 30) {
+      setUsernameError('El nombre de usuario no puede tener más de 30 caracteres');
+      setUsernameValid(false);
+      return;
+    }
+
+    if (!/^[a-zA-Z0-9_-]+$/.test(usernameValue)) {
+      setUsernameError('Solo se permiten letras, números, guiones y guiones bajos');
+      setUsernameValid(false);
+      return;
+    }
+
+    setUsernameChecking(true);
+    try {
+      const result = await checkUsernameAvailability(usernameValue);
+      if (result.available) {
+        setUsernameError('');
+        setUsernameValid(true);
+      } else {
+        setUsernameError(result.message);
+        setUsernameValid(false);
+      }
+    } catch (error) {
+      setUsernameError('Error verificando disponibilidad');
+      setUsernameValid(false);
+    }
+    setUsernameChecking(false);
+  };
+
+  // Debounced username validation
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (username) {
+        validateUsername(username);
+      }
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [username]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,6 +105,11 @@ const Register: React.FC = () => {
     
     if (!username || !email || !password || !confirmPassword) {
       setError('Por favor, completa todos los campos');
+      return;
+    }
+
+    if (!usernameValid) {
+      setError('Por favor, elige un nombre de usuario válido y disponible');
       return;
     }
 
@@ -202,11 +264,32 @@ const Register: React.FC = () => {
                 fullWidth
                 label="Nombre de usuario"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => {
+                  setUsername(e.target.value);
+                  setUsernameError('');
+                  setUsernameValid(false);
+                }}
                 margin="normal"
                 required
                 autoComplete="username"
                 autoFocus
+                error={!!usernameError}
+                helperText={usernameError || (usernameChecking ? 'Verificando disponibilidad...' : (usernameValid ? 'Nombre de usuario disponible' : ''))}
+                InputProps={{
+                  endAdornment: usernameChecking ? (
+                    <InputAdornment position="end">
+                      <Typography variant="caption" color="text.secondary">
+                        Verificando...
+                      </Typography>
+                    </InputAdornment>
+                  ) : usernameValid ? (
+                    <InputAdornment position="end">
+                      <Typography variant="caption" color="success.main">
+                        ✓
+                      </Typography>
+                    </InputAdornment>
+                  ) : null,
+                }}
               />
 
               <TextField

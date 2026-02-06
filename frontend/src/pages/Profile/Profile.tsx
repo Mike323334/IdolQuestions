@@ -46,13 +46,17 @@ function TabPanel(props: TabPanelProps) {
 
 const Profile: React.FC = () => {
   const [tabValue, setTabValue] = useState(0);
-  const { user, logout } = useAuth();
+  const { user, logout, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    if (!user) return;
-  }, [user]);
+    if (loading) return;
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+  }, [user, loading, navigate]);
 
   useEffect(() => {
     if (location.state && location.state.tab !== undefined) {

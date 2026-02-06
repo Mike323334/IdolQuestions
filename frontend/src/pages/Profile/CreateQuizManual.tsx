@@ -31,6 +31,7 @@ import PriceSelector from '../../components/PriceSelector';
 import { createQuiz } from '../../services/quizzes';
 import AIGeneratedQuestions from '../../components/AIGeneratedQuestions';
 import { generateQuestionOptions } from '../../services/api';
+import { mergeOptions } from '../../utils/quizOptions';
 
 interface Question {
   text: string;
@@ -52,7 +53,7 @@ const CreateQuizManual: React.FC = () => {
   const navigate = useNavigate();
 
   const addQuestion = () => {
-    setQuestions([...questions, { text: '', options: ['', '', '', ''], correct: 0 }]);
+    setQuestions([...questions, { text: '', options: Array(8).fill(''), correct: 0 }]);
   };
 
   const updateQuestion = (index: number, field: keyof Question, value: any) => {
@@ -67,12 +68,44 @@ const CreateQuizManual: React.FC = () => {
     setQuestions(updated);
   };
 
-  const handleAiQuestions = (aiQuestions: { text: string; options: string[] }[]) => {
-    const normalized = aiQuestions.map((q) => ({
-      text: q.text,
-      options: q.options && q.options.length === 4 ? q.options : ['', '', '', ''],
-      correct: 0,
-    }));
+  const handleAiQuestions = async (aiQuestions: { text: string; options: string[] }[]) => {
+    setError('');
+    const normalized = await Promise.all(
+      aiQuestions.map(async (q) => {
+        const baseOptions = q.options || [];
+        let options = mergeOptions(baseOptions, []);
+
+        if (options.length < 8) {
+          try {
+            const response = await generateQuestionOptions({
+              question_text: q.text,
+              creator_name: user?.username,
+              existing_options: baseOptions,
+              target_count: 8,
+            });
+            if (response.success && response.options?.length) {
+              options = mergeOptions(baseOptions, response.options);
+            }
+          } catch (genError) {
+            console.error('Failed to expand AI options:', genError);
+          }
+        }
+
+        if (options.length < 8) {
+          setSnackbar({
+            message: 'No se pudieron generar 8 opciones para algunas preguntas. Usa "Generar opciones con IA".',
+            severity: 'error',
+          });
+        }
+
+        return {
+          text: q.text,
+          options: options.length ? options : Array(8).fill(''),
+          correct: 0,
+        };
+      })
+    );
+
     setQuestions((prev) => [...prev, ...normalized]);
   };
 
@@ -89,6 +122,8 @@ const CreateQuizManual: React.FC = () => {
       const response = await generateQuestionOptions({
         question_text: questionText,
         creator_name: user?.username,
+        existing_options: questions[qIndex]?.options,
+        target_count: 8,
       });
       if (!response.success || !response.options?.length) {
         setError(response.message || 'No se pudieron generar opciones.');
@@ -96,9 +131,12 @@ const CreateQuizManual: React.FC = () => {
         return;
       }
       const updated = [...questions];
-      const options = response.options.slice(0, 4);
-      while (options.length < 4) {
-        options.push('');
+      const options = mergeOptions(questions[qIndex]?.options || [], response.options || []);
+      if (options.length < 8) {
+        const message = 'No se pudieron generar 8 opciones. Intenta nuevamente.';
+        setError(message);
+        setSnackbar({ message, severity: 'error' });
+        return;
       }
       updated[qIndex] = { ...updated[qIndex], options };
       setQuestions(updated);
@@ -139,6 +177,12 @@ const CreateQuizManual: React.FC = () => {
       const q = questions[i];
       if (!q.text.trim()) {
         const message = `Question ${i + 1} is missing text.`;
+        setError(message);
+        setSnackbar({ message, severity: 'error' });
+        return;
+      }
+      if (q.options.length < 8) {
+        const message = `Question ${i + 1} needs 8 options.`;
         setError(message);
         setSnackbar({ message, severity: 'error' });
         return;
@@ -262,16 +306,41 @@ const CreateQuizManual: React.FC = () => {
                   </Button>
                 </Box>
 
-                {q.options.map((opt, oIndex) => (
-                  <TextField
-                    key={oIndex}
-                    fullWidth
-                    label={`Option ${oIndex + 1}`}
-                    value={opt}
-                    onChange={(e) => updateOption(qIndex, oIndex, e.target.value)}
-                    placeholder={`Enter option ${oIndex + 1}`}
-                  />
-                ))}
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: '1fr 1fr', lg: '1fr 1fr' },
+                    gap: { xs: 1.5, sm: 2 },
+                  }}
+                >
+                  {q.options.map((opt, oIndex) => (
+                    <TextField
+                      key={oIndex}
+                      fullWidth
+                      label={`Option ${oIndex + 1}`}
+                      value={opt}
+                      onChange={(e) => updateOption(qIndex, oIndex, e.target.value)}
+                      placeholder={`Enter option ${oIndex + 1}`}
+                      multiline
+                      minRows={2}
+                      maxRows={4}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          minHeight: '60px',
+                          alignItems: 'flex-start',
+                          paddingTop: '12px',
+                          paddingBottom: '12px',
+                        },
+                        '& .MuiInputLabel-root': {
+                          transform: 'translate(14px, 12px) scale(1)',
+                          '&.MuiInputLabel-shrink': {
+                            transform: 'translate(14px, -9px) scale(0.75)',
+                          },
+                        },
+                      }}
+                    />
+                  ))}
+                </Box>
 
                 <FormControl fullWidth>
                   <InputLabel>Correct Answer</InputLabel>

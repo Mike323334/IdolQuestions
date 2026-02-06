@@ -26,6 +26,7 @@ import {
   useElements
 } from '@stripe/react-stripe-js';
 import { auth } from '../services/firebase';
+import { API_BASE_URL } from '../services/api';
 
 // Initialize Stripe
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_your_key_here');
@@ -75,7 +76,7 @@ const PaymentForm: React.FC<{
         return;
       }
       // Create payment intent on backend
-      const response = await fetch('http://localhost:8000/api/create-payment-intent', {
+      const response = await fetch(`${API_BASE_URL}/api/create-payment-intent`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -118,10 +119,30 @@ const PaymentForm: React.FC<{
       );
 
       if (confirmError) {
-        setError(confirmError.message || 'Payment failed');
+        // Handle specific error types for better UX
+        if (confirmError.type === 'card_error') {
+          setError(`Card Error: ${confirmError.message}`);
+        } else if (confirmError.type === 'validation_error') {
+          setError(`Validation Error: ${confirmError.message}`);
+        } else {
+          setError(confirmError.message || 'Payment failed');
+        }
         setProcessing(false);
-      } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-        onSuccess();
+      } else if (paymentIntent) {
+        // Handle different payment statuses
+        if (paymentIntent.status === 'succeeded') {
+          onSuccess();
+          setProcessing(false);
+        } else if (paymentIntent.status === 'requires_action') {
+          setError('Payment requires additional authentication. Please complete 3D Secure verification.');
+          setProcessing(false);
+        } else if (paymentIntent.status === 'processing') {
+          setError('Payment is being processed. Please wait...');
+          setProcessing(false);
+        } else {
+          setError(`Payment status: ${paymentIntent.status}. Please try again.`);
+          setProcessing(false);
+        }
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -177,7 +198,7 @@ const PaymentForm: React.FC<{
             boxShadow: '0 8px 24px -6px rgba(99, 102, 241, 0.4)',
           }}
         >
-          {processing ? 'Procesando Pago...' : `Pagar $${price} con Stripe`}
+          {processing ? 'Procesando Pago...' : `Pagar ${price} con Stripe`}
         </Button>
       </Stack>
     </form>
@@ -290,13 +311,30 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({
                   </Typography>
                 </Box>
                 <Divider />
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Box 
+                  sx={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center',
+                    backgroundColor: 'grey.50',
+                    borderRadius: 1,
+                    p: 2,
+                    border: '1px solid',
+                    borderColor: 'grey.200',
+                  }}
+                >
                   <Typography variant="body2" color="text.secondary">
                     Precio
                   </Typography>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <MoneyIcon sx={{ color: 'primary.main' }} />
-                    <Typography variant="h5" fontWeight={700} className="text-gradient">
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    <Typography 
+                      variant="h5" 
+                      fontWeight={700}
+                      sx={{
+                        color: 'text.primary',
+                        fontSize: '1.5rem',
+                      }}
+                    >
                       ${price}
                     </Typography>
                   </Box>

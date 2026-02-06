@@ -1,82 +1,68 @@
 import React from 'react';
-import { Box, Container, Typography, Link, Stack } from '@mui/material';
+import { Box, Container, Typography, Link as MuiLink, Divider } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 const Footer: React.FC = () => {
   return (
     <Box
       component="footer"
       sx={{
-        py: 4,
+        py: 3,
         px: 2,
         mt: 'auto',
-        backgroundColor: 'background.paper',
-        borderTop: '1px solid',
-        borderColor: 'divider',
-        background: 'linear-gradient(180deg, rgba(99, 102, 241, 0.02) 0%, transparent 100%)',
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        borderTop: '1px solid rgba(255, 255, 255, 0.1)',
       }}
     >
       <Container maxWidth="lg">
-        <Stack
-          direction={{ xs: 'column', sm: 'row' }}
-          justifyContent="space-between"
-          alignItems="center"
-          spacing={2}
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: 2,
+          }}
         >
-          <Typography variant="body2" color="text.secondary" fontWeight={500}>
-            © {new Date().getFullYear()} IdolQuestions. All rights reserved.
+          <Typography variant="body2" color="rgba(255, 255, 255, 0.7)">
+            © {new Date().getFullYear()} IdolQuestions. Todos los derechos reservados.
           </Typography>
           
-            <Stack direction="row" spacing={4}>
-            <Link
-              href="/content-guidelines"
-              color="text.secondary"
-              underline="hover"
-              variant="body2"
+          <Box sx={{ display: 'flex', gap: 3, alignItems: 'center' }}>
+            <MuiLink
+              component={Link}
+              to="/privacy-policy"
               sx={{
-                fontWeight: 500,
-                transition: 'all 0.2s',
+                color: 'rgba(255, 255, 255, 0.7)',
+                textDecoration: 'none',
                 '&:hover': {
-                  color: 'primary.main',
-                  transform: 'translateY(-2px)',
+                  color: '#ffffff',
+                  textDecoration: 'underline',
                 },
               }}
             >
-              Content Guidelines
-            </Link>
-            <Link
-              href="/terms-of-service"
-              color="text.secondary"
-              underline="hover"
-              variant="body2"
+              Política de Privacidad
+            </MuiLink>
+            
+            <Typography variant="body2" color="rgba(255, 255, 255, 0.3)">
+              |
+            </Typography>
+            
+            <MuiLink
+              href="mailto:support@idolquestions.com"
               sx={{
-                fontWeight: 500,
-                transition: 'all 0.2s',
+                color: 'rgba(255, 255, 255, 0.7)',
+                textDecoration: 'none',
                 '&:hover': {
-                  color: 'primary.main',
-                  transform: 'translateY(-2px)',
+                  color: '#ffffff',
+                  textDecoration: 'underline',
                 },
               }}
             >
-              Terms of Service
-            </Link>
-            <Link
-              href="/refund-policy"
-              color="text.secondary"
-              underline="hover"
-              variant="body2"
-              sx={{
-                fontWeight: 500,
-                transition: 'all 0.2s',
-                '&:hover': {
-                  color: 'primary.main',
-                  transform: 'translateY(-2px)',
-                },
-              }}
-            >
-              Refund Policy
-            </Link>
-          </Stack>
-        </Stack>
+              Contacto
+            </MuiLink>
+          </Box>
+        </Box>
       </Container>
     </Box>
   );

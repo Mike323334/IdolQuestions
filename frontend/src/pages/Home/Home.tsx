@@ -15,6 +15,7 @@ import {
   PlayArrow as PlayIcon,
   EmojiEvents as TrophyIcon,
   Create as CreateIcon,
+  HelpOutline as HelpOutlineIcon,
 } from '@mui/icons-material';
 import Layout from '../../components/Layout/Layout';
 import { useAuth } from '../../contexts/AuthContext';
@@ -85,21 +86,23 @@ const Home: React.FC = () => {
           },
         }}
       >
-        <Typography
-          variant="h1"
-          className="text-gradient"
-          sx={{
-            fontSize: { xs: '2.75rem', md: '4rem' },
-            mb: 3,
-            fontWeight: 800,
-            letterSpacing: '-0.03em',
-            position: 'relative',
-            zIndex: 1,
-            lineHeight: 1.1,
-          }}
-        >
-          Pon a Prueba Tu Conocimiento
-        </Typography>
+        <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1, mb: 3 }}>
+          <Typography
+            variant="h1"
+            className="text-gradient"
+            sx={{
+              fontSize: { xs: '2.75rem', md: '4rem' },
+              fontWeight: 800,
+              letterSpacing: '-0.03em',
+              position: 'relative',
+              zIndex: 1,
+              lineHeight: 1.1,
+            }}
+          >
+            Pon a Prueba Tu Conocimiento
+          </Typography>
+          <HelpOutlineIcon sx={{ color: 'text.secondary', opacity: 0.7, mt: 1 }} />
+        </Box>
         <Typography
           variant="h5"
           color="text.secondary"
@@ -114,7 +117,7 @@ const Home: React.FC = () => {
             zIndex: 1,
           }}
         >
-          Crea cuestionarios y desafía a tus seguidores
+          Crea cuestionarios y desafía a tus seguidores o a tus ídolos
         </Typography>
         
         <Stack
@@ -124,21 +127,39 @@ const Home: React.FC = () => {
           sx={{ position: 'relative', zIndex: 1 }}
         >
           {isAuthenticated ? (
-            <Button
-              component={RouterLink}
-              to="/profile/create-quiz"
-              variant="contained"
-              size="large"
-              startIcon={<CreateIcon />}
-              sx={{ 
-                px: 5,
-                py: 1.5,
-                fontSize: '1rem',
-                boxShadow: '0 8px 24px -6px rgba(99, 102, 241, 0.4)',
-              }}
-            >
-              Crear Cuestionario
-            </Button>
+            user?.role === 'Content Creator' ? (
+              <Button
+                component={RouterLink}
+                to="/profile/create-quiz"
+                variant="contained"
+                size="large"
+                startIcon={<CreateIcon />}
+                sx={{ 
+                  px: 5,
+                  py: 1.5,
+                  fontSize: '1rem',
+                  boxShadow: '0 8px 24px -6px rgba(99, 102, 241, 0.4)',
+                }}
+              >
+                Crear Cuestionario
+              </Button>
+            ) : (
+              <Button
+                component={RouterLink}
+                to="/propose-question"
+                variant="outlined"
+                size="large"
+                startIcon={<HelpOutlineIcon />}
+                sx={{ 
+                  px: 5,
+                  py: 1.5,
+                  fontSize: '1rem',
+                  borderWidth: 2,
+                }}
+              >
+                Proponer Pregunta
+              </Button>
+            )
           ) : (
             <Button
               component={RouterLink}
@@ -184,9 +205,12 @@ const Home: React.FC = () => {
             mb: 3,
           }}
         >
-          <Typography variant="h4" fontWeight={600}>
-            Cuestionarios Disponibles
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography variant="h4" fontWeight={600}>
+              Cuestionarios Disponibles
+            </Typography>
+            <HelpOutlineIcon fontSize="small" sx={{ color: 'text.secondary' }} />
+          </Box>
         </Box>
 
         {quizzes.length === 0 ? (

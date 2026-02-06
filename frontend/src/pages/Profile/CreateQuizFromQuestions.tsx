@@ -30,6 +30,8 @@ import {
 import { useAuth } from '../../contexts/AuthContext';
 import { createQuiz } from '../../services/quizzes';
 import PriceSelector from '../../components/PriceSelector';
+import { mergeOptions } from '../../utils/quizOptions';
+import { generateQuestionOptions } from '../../services/api';
 
 interface Question {
   text: string;
@@ -515,16 +517,39 @@ const CreateQuizFromQuestions: React.FC = () => {
     }
 
     // Generate fan quiz questions using creator's answers
-    const fanQuestions = selectedQuestionIds.map(questionId => {
-      const originalQuestion = questionPool[questionId];
-      const creatorAnswerIndex = creatorAnswers[questionId];
+    const fanQuestions = await Promise.all(
+      selectedQuestionIds.map(async (questionId) => {
+        const originalQuestion = questionPool[questionId];
+        const creatorAnswerIndex = creatorAnswers[questionId];
+        const existingOptions = originalQuestion.options || [];
 
-      return {
-        ...originalQuestion,
-        text: originalQuestion.text,
-        correct: creatorAnswerIndex
-      };
-    });
+        let finalOptions = mergeOptions(existingOptions, []);
+        if (finalOptions.length < 8) {
+          const response = await generateQuestionOptions({
+            question_text: originalQuestion.text,
+            creator_name: user?.username,
+            existing_options: existingOptions,
+            target_count: 8,
+          });
+
+          if (!response.success || !response.options?.length) {
+            throw new Error(response.message || 'No se pudieron generar opciones.');
+          }
+
+          finalOptions = mergeOptions(existingOptions, response.options);
+          if (finalOptions.length < 8) {
+            throw new Error('No se pudieron generar 8 opciones. Intenta nuevamente.');
+          }
+        }
+
+        return {
+          ...originalQuestion,
+          text: originalQuestion.text,
+          options: finalOptions,
+          correct: creatorAnswerIndex
+        };
+      })
+    );
 
     const quiz = {
       title: quizTitle,
@@ -544,7 +569,10 @@ const CreateQuizFromQuestions: React.FC = () => {
       }, 1500);
     } catch (saveError) {
       console.error('Failed to save quiz:', saveError);
-      setErrorMessage('No se pudo guardar el cuestionario. Intenta de nuevo.');
+      const message = saveError instanceof Error
+        ? saveError.message
+        : 'No se pudo guardar el cuestionario. Intenta de nuevo.';
+      setErrorMessage(message);
       setErrorDialogOpen(true);
     }
   };
@@ -775,6 +803,13 @@ const CreateQuizFromQuestions: React.FC = () => {
                         <RadioGroup
                           value={creatorAnswers[questionId] ?? ''}
                           onChange={(e) => handleCreatorAnswer(questionId, parseInt(e.target.value))}
+                          sx={{
+                            display: 'grid',
+                            gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: '1fr 1fr', lg: '1fr 1fr' },
+                            gap: { xs: 1, sm: 1.5 },
+                            mt: 1,
+                            width: '100%',
+                          }}
                         >
                           {question.options.map((option, optIndex) => (
                             <FormControlLabel
@@ -782,6 +817,33 @@ const CreateQuizFromQuestions: React.FC = () => {
                               value={optIndex}
                               control={<Radio />}
                               label={`${String.fromCharCode(65 + optIndex)}. ${option}`}
+                              sx={{
+                                m: 0,
+                                width: '100%',
+                                alignItems: 'flex-start',
+                                border: '1px solid',
+                                borderColor: 'divider',
+                                borderRadius: 2,
+                                px: { xs: 1, sm: 1.5 },
+                                py: { xs: 0.75, sm: 1 },
+                                '& .MuiFormControlLabel-label': {
+                                  whiteSpace: 'normal',
+                                  wordBreak: 'break-word',
+                                  lineHeight: 1.4,
+                                  overflowWrap: 'break-word',
+                                  hyphens: 'auto',
+                                  display: 'block',
+                                  fontSize: { xs: '0.875rem', sm: '1rem' },
+                                  padding: '4px 0',
+                                },
+                                '& .MuiRadio-root': {
+                                  padding: { xs: '4px', sm: '9px' },
+                                  alignSelf: 'flex-start',
+                                  marginTop: '2px',
+                                },
+                                minHeight: { xs: '50px', sm: '60px' },
+                                height: 'auto',
+                              }}
                             />
                           ))}
                         </RadioGroup>

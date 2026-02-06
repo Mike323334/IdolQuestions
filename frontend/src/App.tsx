@@ -17,14 +17,20 @@ import BrowseQuizzes from './pages/BrowseQuizzes';
 import TermsOfService from './pages/TermsOfService';
 import RefundPolicy from './pages/RefundPolicy';
 import RefundRequests from './pages/RefundRequests';
+import ProposeQuestion from './pages/ProposeQuestion';
+import MyProposals from './pages/MyProposals';
+import ReviewProposals from './pages/ReviewProposals';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import ErrorBoundary from './components/ErrorBoundary';
 
 function App(): React.ReactElement {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AuthProvider>
-        <Router>
-          <Routes>
+      <ErrorBoundary>
+        <AuthProvider>
+          <Router>
+            <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
@@ -37,13 +43,18 @@ function App(): React.ReactElement {
             <Route path="/terms-of-service" element={<TermsOfService />} />
             <Route path="/refund-policy" element={<RefundPolicy />} />
             <Route path="/refund-requests" element={<RefundRequests />} />
+            <Route path="/propose-question" element={<ProposeQuestion />} />
+            <Route path="/my-proposals" element={<MyProposals />} />
+            <Route path="/review-proposals" element={<ReviewProposals />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
             {/* Redirect old routes */}
             <Route path="/leaderboard" element={<Navigate to="/results" replace />} />
             <Route path="/create-quiz" element={<Navigate to="/profile" replace />} />
-          </Routes>
-        </Router>
-      </AuthProvider>
+            </Routes>
+          </Router>
+        </AuthProvider>
+      </ErrorBoundary>
     </ThemeProvider>
   );
 }

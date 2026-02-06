@@ -15,6 +15,7 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import { auth, db, googleProvider } from '../services/firebase';
+import { checkUsernameAvailability } from '../services/api';
 
 interface User {
   id: string;
@@ -139,6 +140,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const register = async (username: string, email: string, password: string, role: 'Content Creator' | 'Follower' = 'Follower'): Promise<boolean> => {
     try {
+      // First check if username is available
+      const usernameCheck = await checkUsernameAvailability(username);
+      if (!usernameCheck.available) {
+        throw new Error(usernameCheck.message);
+      }
+
       const credential = await createUserWithEmailAndPassword(auth, email, password);
       if (auth.currentUser) {
         await updateProfile(auth.currentUser, { displayName: username });
@@ -190,6 +197,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       const displayName = usernameOverride || firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User';
+      
+      // Check username availability if using override
+      if (usernameOverride) {
+        const usernameCheck = await checkUsernameAvailability(usernameOverride);
+        if (!usernameCheck.available) {
+          throw new Error(usernameCheck.message);
+        }
+      }
+      
       if (auth.currentUser && usernameOverride) {
         await updateProfile(auth.currentUser, { displayName });
       }
@@ -214,9 +230,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (!auth.currentUser) return false;
       const firebaseUser = auth.currentUser;
       const displayName = usernameOverride || firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User';
+      
+      // Check username availability if using override
       if (usernameOverride) {
+        const usernameCheck = await checkUsernameAvailability(usernameOverride);
+        if (!usernameCheck.available) {
+          throw new Error(usernameCheck.message);
+        }
         await updateProfile(firebaseUser, { displayName });
       }
+      
       const profile = await ensureUserProfile(firebaseUser.uid, {
         username: displayName,
         email: firebaseUser.email || '',

@@ -16,8 +16,8 @@ const theme = createTheme({
       contrastText: '#ffffff',
     },
     background: {
-      default: '#fafafa', // Soft off-white background
-      paper: '#ffffff', // Pure white for cards
+      default: 'transparent', // Let black background show through
+      paper: 'rgba(255, 255, 255, 0.98)', // Almost opaque white for cards on black
     },
     text: {
       primary: '#0f172a', // Rich dark for primary text
@@ -52,38 +52,38 @@ const theme = createTheme({
       fontWeight: 700,
       lineHeight: 1.2,
       letterSpacing: '-0.02em',
-      color: '#111827',
+      color: '#ffffff', // White for dark background
     },
     h2: {
       fontSize: '2.5rem',
       fontWeight: 700,
       lineHeight: 1.3,
       letterSpacing: '-0.01em',
-      color: '#111827',
+      color: '#ffffff', // White for dark background
     },
     h3: {
       fontSize: '2rem',
       fontWeight: 600,
       lineHeight: 1.4,
-      color: '#111827',
+      color: '#ffffff', // White for dark background
     },
     h4: {
       fontSize: '1.5rem',
       fontWeight: 600,
       lineHeight: 1.4,
-      color: '#111827',
+      color: '#ffffff', // White for dark background
     },
     h5: {
       fontSize: '1.25rem',
       fontWeight: 600,
       lineHeight: 1.5,
-      color: '#111827',
+      color: '#ffffff', // White for dark background
     },
     h6: {
       fontSize: '1rem',
       fontWeight: 600,
       lineHeight: 1.5,
-      color: '#111827',
+      color: '#ffffff', // White for dark background
     },
     body1: {
       fontSize: '1rem',
@@ -209,14 +209,15 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: '16px',
-          boxShadow: '0 2px 8px 0 rgba(0, 0, 0, 0.08)',
-          border: '1px solid #f1f5f9',
+          boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.15)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           overflow: 'hidden',
+          backdropFilter: 'blur(10px)',
           '&:hover': {
-            boxShadow: '0 12px 24px -6px rgba(0, 0, 0, 0.12)',
+            boxShadow: '0 16px 40px -8px rgba(0, 0, 0, 0.25)',
             transform: 'translateY(-4px)',
-            borderColor: '#e2e8f0',
+            borderColor: 'rgba(255, 255, 255, 0.2)',
           },
         },
       },
@@ -268,6 +269,14 @@ const theme = createTheme({
             height: 3,
             borderRadius: '3px 3px 0 0',
           },
+        },
+      },
+    },
+    MuiContainer: {
+      styleOverrides: {
+        root: {
+          maxWidth: '1280px !important',
+          width: '100%',
         },
       },
     },

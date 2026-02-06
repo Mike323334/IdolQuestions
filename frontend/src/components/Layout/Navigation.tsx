@@ -69,13 +69,25 @@ const Navigation: React.FC = () => {
     { path: '/results', label: 'Resultados', icon: <TrophyIcon /> },
   ];
 
+  const followerLinks = [
+    { path: '/propose-question', label: 'Proponer Pregunta', icon: <AddIcon /> },
+    { path: '/my-proposals', label: 'Mis Propuestas', icon: <LibraryBooksIcon /> },
+  ];
+
+  const creatorLinks = [
+    { path: '/review-proposals', label: 'Revisar Propuestas', icon: <LibraryBooksIcon /> },
+  ];
+
   const profileMenuItems = user?.role === 'Content Creator' ? [
     { path: '/profile', label: 'Perfil', icon: <PersonIcon /> },
     { path: '/profile/create-quiz', label: 'Crear Cuestionario', icon: <AddIcon /> },
     { path: '/profile/my-quizzes', label: 'Mis Cuestionarios', icon: <LibraryBooksIcon /> },
+    { path: '/review-proposals', label: 'Revisar Propuestas', icon: <LibraryBooksIcon /> },
     { path: '/settings', label: 'Configuración', icon: <SettingsIcon /> },
   ] : [
     { path: '/profile', label: 'Perfil', icon: <PersonIcon /> },
+    { path: '/propose-question', label: 'Proponer Pregunta', icon: <AddIcon /> },
+    { path: '/my-proposals', label: 'Mis Propuestas', icon: <LibraryBooksIcon /> },
     { path: '/settings', label: 'Configuración', icon: <SettingsIcon /> },
   ];
 
@@ -109,6 +121,7 @@ const Navigation: React.FC = () => {
                 fontSize: '1.5rem',
                 letterSpacing: '-0.02em',
                 transition: 'all 0.3s',
+                color: '#000000 !important', // Force black color
                 '&:hover': {
                   transform: 'scale(1.05)',
                 },
@@ -283,7 +296,7 @@ const Navigation: React.FC = () => {
         onClose={handleMobileMenuToggle}
       >
         <Box sx={{ width: 250, pt: 2 }}>
-          <Typography variant="h6" sx={{ px: 2, mb: 2, fontWeight: 700 }}>
+          <Typography variant="h6" sx={{ px: 2, mb: 2, fontWeight: 700, color: '#000000 !important' }}>
             IdolQuestions
           </Typography>
           <List>

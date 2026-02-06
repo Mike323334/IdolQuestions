@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -20,6 +20,7 @@ import {
   Save as SaveIcon,
   Delete as DeleteIcon,
   Warning as WarningIcon,
+  HelpOutline as HelpOutlineIcon,
 } from '@mui/icons-material';
 import Layout from '../../components/Layout/Layout';
 import { useAuth } from '../../contexts/AuthContext';
@@ -28,7 +29,7 @@ import { useTranslation } from 'react-i18next';
 import { updateProfile } from 'firebase/auth';
 import { doc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../../services/firebase';
-import { createStripeConnectAccount } from '../../services/api';
+import { createStripeConnectAccount, checkUsernameAvailability } from '../../services/api';
 
 const Settings: React.FC = () => {
   const { user, logout, requestAccountDeletion } = useAuth();
@@ -43,11 +44,74 @@ const Settings: React.FC = () => {
   const [error, setError] = useState('');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [stripeLoading, setStripeLoading] = useState(false);
+  const [usernameError, setUsernameError] = useState('');
+  const [usernameChecking, setUsernameChecking] = useState(false);
+  const [usernameValid, setUsernameValid] = useState(true); // Start as true since current username is valid
 
   if (!user) {
     navigate('/login');
     return null;
   }
+
+  const validateUsername = async (usernameValue: string) => {
+    // If username hasn't changed, it's valid
+    if (usernameValue === user.username) {
+      setUsernameError('');
+      setUsernameValid(true);
+      return;
+    }
+
+    if (!usernameValue.trim()) {
+      setUsernameError('El nombre de usuario es requerido');
+      setUsernameValid(false);
+      return;
+    }
+
+    if (usernameValue.length < 3) {
+      setUsernameError('El nombre de usuario debe tener al menos 3 caracteres');
+      setUsernameValid(false);
+      return;
+    }
+
+    if (usernameValue.length > 30) {
+      setUsernameError('El nombre de usuario no puede tener más de 30 caracteres');
+      setUsernameValid(false);
+      return;
+    }
+
+    if (!/^[a-zA-Z0-9_-]+$/.test(usernameValue)) {
+      setUsernameError('Solo se permiten letras, números, guiones y guiones bajos');
+      setUsernameValid(false);
+      return;
+    }
+
+    setUsernameChecking(true);
+    try {
+      const result = await checkUsernameAvailability(usernameValue);
+      if (result.available) {
+        setUsernameError('');
+        setUsernameValid(true);
+      } else {
+        setUsernameError(result.message);
+        setUsernameValid(false);
+      }
+    } catch (error) {
+      setUsernameError('Error verificando disponibilidad');
+      setUsernameValid(false);
+    }
+    setUsernameChecking(false);
+  };
+
+  // Debounced username validation
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (username) {
+        validateUsername(username);
+      }
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [username, user.username]);
 
   const handleSaveProfile = () => {
     setError('');
@@ -55,6 +119,11 @@ const Settings: React.FC = () => {
 
     if (!username.trim()) {
       setError(t('settings.error.required'));
+      return;
+    }
+
+    if (!usernameValid) {
+      setError('Por favor, elige un nombre de usuario válido y disponible');
       return;
     }
 
@@ -126,9 +195,12 @@ const Settings: React.FC = () => {
         {/* Profile Settings */}
         <Card sx={{ mb: 3 }}>
           <CardContent>
-            <Typography variant="h6" fontWeight={600} gutterBottom>
-              {t('settings.profile.title')}
-            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+              <Typography variant="h6" fontWeight={600}>
+                {t('settings.profile.title')}
+              </Typography>
+              <HelpOutlineIcon fontSize="small" sx={{ color: 'text.secondary' }} />
+            </Box>
             <Divider sx={{ mb: 3 }} />
 
             <Stack spacing={3}>
@@ -136,7 +208,13 @@ const Settings: React.FC = () => {
                 fullWidth
                 label={t('settings.profile.username')}
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => {
+                  setUsername(e.target.value);
+                  setUsernameError('');
+                  setUsernameValid(e.target.value === user.username); // Valid if unchanged
+                }}
+                error={!!usernameError}
+                helperText={usernameError || (usernameChecking ? 'Verificando disponibilidad...' : (usernameValid && username !== user.username ? 'Nombre de usuario disponible' : ''))}
               />
 
               <TextField
@@ -179,9 +257,12 @@ const Settings: React.FC = () => {
         {/* Notification Settings */}
         <Card sx={{ mb: 3 }}>
           <CardContent>
-            <Typography variant="h6" fontWeight={600} gutterBottom>
-              {t('settings.notifications.title')}
-            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+              <Typography variant="h6" fontWeight={600}>
+                {t('settings.notifications.title')}
+              </Typography>
+              <HelpOutlineIcon fontSize="small" sx={{ color: 'text.secondary' }} />
+            </Box>
             <Divider sx={{ mb: 3 }} />
 
             <Stack spacing={2}>
@@ -211,9 +292,12 @@ const Settings: React.FC = () => {
         {/* Stripe Connect */}
         <Card sx={{ mb: 3 }}>
           <CardContent>
-            <Typography variant="h6" fontWeight={600} gutterBottom>
-              Stripe
-            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+              <Typography variant="h6" fontWeight={600}>
+                Stripe
+              </Typography>
+              <HelpOutlineIcon fontSize="small" sx={{ color: 'text.secondary' }} />
+            </Box>
             <Divider sx={{ mb: 3 }} />
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
               Conecta tu cuenta de Stripe para recibir pagos de tus seguidores.

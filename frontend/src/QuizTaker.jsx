@@ -220,6 +220,12 @@ const QuizTaker = () => {
                 <RadioGroup
                   value={answers[qIndex] ?? -1}
                   onChange={(e) => handleAnswerChange(qIndex, parseInt(e.target.value))}
+                  sx={{
+                    display: 'grid',
+                    gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: '1fr 1fr', lg: '1fr 1fr' },
+                    gap: { xs: 1, sm: 1.5 },
+                    width: '100%',
+                  }}
                 >
                   {q.options.map((opt, oIndex) => (
                     <FormControlLabel
@@ -227,7 +233,33 @@ const QuizTaker = () => {
                       value={oIndex}
                       control={<Radio />}
                       label={opt}
-                      sx={{ mb: 1 }}
+                      sx={{
+                        m: 0,
+                        width: '100%',
+                        alignItems: 'flex-start',
+                        border: '1px solid',
+                        borderColor: 'divider',
+                        borderRadius: 2,
+                        px: { xs: 1, sm: 1.5 },
+                        py: { xs: 0.75, sm: 1 },
+                        '& .MuiFormControlLabel-label': {
+                          whiteSpace: 'normal',
+                          wordBreak: 'break-word',
+                          lineHeight: 1.4,
+                          overflowWrap: 'break-word',
+                          hyphens: 'auto',
+                          display: 'block',
+                          fontSize: { xs: '0.875rem', sm: '1rem' },
+                          padding: '4px 0',
+                        },
+                        '& .MuiRadio-root': {
+                          padding: { xs: '4px', sm: '9px' },
+                          alignSelf: 'flex-start',
+                          marginTop: '2px',
+                        },
+                        minHeight: { xs: '50px', sm: '60px' },
+                        height: 'auto',
+                      }}
                     />
                   ))}
                 </RadioGroup>
