@@ -10,6 +10,10 @@ from email.mime.multipart import MIMEMultipart
 from datetime import datetime, timedelta
 from collections import defaultdict
 import json
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # In-memory storage for tracking (in production, use Redis or database)
 failed_attempts = defaultdict(list)
